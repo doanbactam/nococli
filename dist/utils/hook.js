@@ -58,7 +58,7 @@ var DEFAULT_AI_PATTERNS = [
 // src/utils/hook.ts
 function generateHookContent(options = {}) {
   const patterns = options.patterns || DEFAULT_AI_PATTERNS;
-  const sedCommands = patterns.map((p) => `sed -i '/${p.pattern}/d' "$COMMIT_MSG_FILE"`).join(`
+  const sedCommands = patterns.map((p) => `sed -i -E '/${p.pattern}/d' "$COMMIT_MSG_FILE"`).join(`
 `);
   return `#!/bin/bash
 # git-no-ai-author: Remove AI co-author signatures from commit messages
