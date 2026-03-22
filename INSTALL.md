@@ -52,9 +52,20 @@ git log -1 --format=full
 ### Commands
 
 ```bash
-npx nococli              # install hook in current repo
+npx nococli              # install (default)
+npx nococli install      # install explicitly
 npx nococli uninstall    # remove hook
-npx nococli --help       # see all options
+npx nococli status       # check if installed
+npx nococli patterns     # list AI patterns removed
+```
+
+**Or install globally for shorter commands:**
+
+```bash
+npm install -g nococli
+noco                      # install
+noco uninstall            # remove hook
+noco status               # check status
 ```
 
 ### Verify it's working
