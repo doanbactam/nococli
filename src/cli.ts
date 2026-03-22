@@ -19,7 +19,7 @@ const logger = new Logger();
 const program = new Command();
 
 program
-  .name('noco')
+  .name('@iamsyr/noco')
   .description('Keep your code yours')
   .version('1.0.0');
 
