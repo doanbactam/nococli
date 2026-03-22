@@ -8,28 +8,61 @@ npx nococli
 
 Works on Windows, Mac, Linux. No setup required.
 
+Run this in any git repo to install the hook.
+
 ## What it does
 
 Installs a git hook that removes AI co-author signatures from your commits before they're created.
 
 Supports: Claude Code, GitHub Copilot, Cursor, Windsurf, and other AI tools.
 
-## After install
+## Usage
 
-All your future commits will be yours. AI co-authors are automatically stripped.
+### Normal commit (without nococli)
 
-### Uninstall
-
-```bash
-npx nococli uninstall
+```
+commit abc123
+Author: You <you@example.com>
+Co-authored-by: Claude <noreply@anthropic.com>
 ```
 
-## Global install (optional)
+### With nococli installed
 
-If you use `noco` frequently:
+```
+commit abc123
+Author: You <you@example.com>
+```
+
+Just commit as usual. The hook runs automatically before each commit.
+
+### Example workflow
 
 ```bash
-npm install -g nococli
-noco install    # install hooks
-noco uninstall  # remove hooks
+# 1. Install once per project
+npx nococli
+
+# 2. Work normally - hook runs automatically
+git add .
+git commit -m "fix: improve error handling"
+
+# 3. Verify - no AI co-author!
+git log -1 --format=full
+```
+
+### Commands
+
+```bash
+npx nococli              # install hook in current repo
+npx nococli uninstall    # remove hook
+npx nococli --help       # see all options
+```
+
+### Verify it's working
+
+```bash
+# Check if hook exists
+ls .git/hooks/prepare-commit-msg-noco
+
+# Or check git config
+git config --get --bool noco.enabled
 ```
