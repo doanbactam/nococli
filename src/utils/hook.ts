@@ -14,8 +14,9 @@ export interface HookTemplateOptions {
 export function generateHookContent(options: HookTemplateOptions = {}): string {
   const patterns = options.patterns || DEFAULT_AI_PATTERNS;
 
+  // Use -E flag for extended regex (ERE) to support () groups and | alternation
   const sedCommands = patterns
-    .map(p => `sed -i '/${p.pattern}/d' "$COMMIT_MSG_FILE"`)
+    .map(p => `sed -i -E '/${p.pattern}/d' "$COMMIT_MSG_FILE"`)
     .join('\n');
 
   return `#!/bin/bash

@@ -4,6 +4,7 @@
 
 import path from 'path';
 import os from 'os';
+import fs from 'fs/promises';
 import { Config } from '../types.js';
 
 export function getHomeDir(): string {
@@ -35,11 +36,9 @@ export function toGitPath(filePath: string): string {
  */
 export async function pathExists(filePath: string): Promise<boolean> {
   try {
-    await fs.promises.access(filePath);
+    await fs.access(filePath);
     return true;
   } catch {
     return false;
   }
 }
-
-import fs from 'fs/promises';

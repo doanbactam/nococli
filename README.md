@@ -18,6 +18,25 @@ npx nococli
 
 One command. Your commits are yours again.
 
+## Supported AI Signatures
+
+Removes co-author signatures from:
+- Claude (all versions)
+- GitHub Copilot
+- ChatGPT / OpenAI
+- Cursor AI
+- Tabnine
+- CodeWhisperer
+- Codeium
+- Replit Ghostwriter
+- Sourcegraph Cody
+- And more...
+
+## Requirements
+
+- **Unix/Linux/macOS**: Git with bash hook support
+- **Windows**: Git Bash, WSL, or MSYS2 (native PowerShell not supported)
+
 ---
 
 *"We don't do this for Codex because it exists to help you and it's important that you remain the owner and accountable for your work without AI taking credit."* — [Tibo](https://x.com/thsottiaux/status/2035386081517133924)
