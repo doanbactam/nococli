@@ -2206,14 +2206,12 @@ var init_string_width = __esm(() => {
 });
 
 // src/types.ts
+var AI_PATTERN_REGEX = "^Co-Authored-By: (Claude|GitHub Copilot|ChatGPT|Anthropic|OpenAI|Cursor AI|AI Assistant).*";
 var DEFAULT_AI_PATTERNS = [
-  { name: "Claude Opus", pattern: "^Co-Authored-By: Claude Opus" },
-  { name: "GitHub Copilot", pattern: "^Co-Authored-By: GitHub Copilot" },
-  { name: "ChatGPT", pattern: "^Co-Authored-By: ChatGPT" },
-  { name: "Anthropic", pattern: "^Co-Authored-By: Anthropic" },
-  { name: "OpenAI", pattern: "^Co-Authored-By: OpenAI" },
-  { name: "Cursor AI", pattern: "^Co-Authored-By: Cursor AI" },
-  { name: "AI Assistant", pattern: "^Co-Authored-By: AI Assistant" }
+  {
+    name: "AI Co-Authors",
+    pattern: AI_PATTERN_REGEX
+  }
 ];
 
 // src/install.ts
