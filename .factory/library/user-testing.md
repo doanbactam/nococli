@@ -76,3 +76,44 @@ function createHome(name) {
   return { HOME: homeDir, USERPROFILE: homeDir };
 }
 ```
+
+## Validation Concurrency
+
+Based on dry run observations:
+- **Max concurrent validators for git hook testing: 3**
+- **Max concurrent validators for CLI commands: 5**
+
+Each flow validator should use its own isolated temp directory to avoid conflicts.
+
+---
+
+## Flow Validator Guidance: CLI/Git Hook Testing
+
+**Isolation Rules:**
+1. Each validator must create its own isolated temp directory under the system temp folder
+2. Each validator must set isolated HOME environment variable to avoid affecting user's real git config
+3. Clean up all temp files and directories after testing completes
+
+**Testing Approach:**
+1. Build the project: `bun run build`
+2. Create isolated test environment:
+   ```javascript
+   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'nococli-flow-<unique-id>'));
+   const homeDir = path.join(tempRoot, 'home');
+   fs.mkdirSync(homeDir, { recursive: true });
+   ```
+3. Set environment variables: `{ HOME: homeDir, USERPROFILE: homeDir }`
+4. Run installation: `node dist/cli.js install`
+5. Create test git repo within the temp directory
+6. Make commits with various AI signature patterns
+7. Verify signatures are correctly removed/preserved
+
+**Shared State to Avoid:**
+- User's real git config (`~/.gitconfig`)
+- Global git template directory
+- Any repository outside the temp directory
+
+**Constraints:**
+- Do NOT modify user's actual global git config
+- Do NOT run tests against production/user repositories
+- All file operations must be within the temp directory
