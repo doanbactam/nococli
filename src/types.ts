@@ -31,7 +31,8 @@ export interface HookResult {
 
 // All AI co-author patterns in one regex - easy to extend
 // Matches: Co-Authored-By: <AI-Name> <version> <email> ...
-const AI_PATTERN_REGEX = '^Co-Authored-By: (Claude|GitHub Copilot|ChatGPT|Anthropic|OpenAI|Cursor AI|AI Assistant|Tabnine|CodeWhisperer|Codeium|Replit Ghostwriter|Sourcegraph Cody|Cody).*';
+// Uses character classes for case-insensitive matching (portable across sed implementations)
+const AI_PATTERN_REGEX = '^[Cc][Oo]-[Aa][Uu][Tt][Hh][Oo][Rr][Ee][Dd]-[Bb][Yy]: (Claude|GitHub Copilot|ChatGPT|Anthropic|OpenAI|Cursor AI|AI Assistant|Tabnine|CodeWhisperer|Codeium|Replit Ghostwriter|Sourcegraph Cody|Cody).*';
 
 export const DEFAULT_AI_PATTERNS: readonly AI_PATTERN[] = [
   {
