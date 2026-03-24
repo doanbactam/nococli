@@ -1,5 +1,9 @@
 # nococli
 
+[![npm version](https://img.shields.io/npm/v/nococli.svg)](https://www.npmjs.com/package/nococli)
+[![npm downloads](https://img.shields.io/npm/dm/nococli.svg)](https://www.npmjs.com/package/nococli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 > Your code is yours. Your commits should be too.
 
 AI tools (Claude Code, Copilot, Cursor) auto-add themselves as co-author on every commit.
@@ -44,6 +48,21 @@ Removes co-author signatures from:
 
 - **Unix/Linux/macOS**: Git with bash hook support
 - **Windows**: Git Bash, WSL, or MSYS2 (native PowerShell not supported)
+
+## Install
+
+```bash
+# Run directly with npx (recommended)
+npx nococli
+
+# Or install globally
+npm install -g nococli
+noco
+```
+
+## npm Package
+
+[nococli](https://www.npmjs.com/package/nococli) - A package manager for JavaScript, included with Node.js. npm makes it easy for developers to share and reuse code.
 
 ---
 
