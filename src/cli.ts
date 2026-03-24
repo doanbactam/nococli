@@ -236,6 +236,62 @@ program
     logger.info(`${patterns.length} patterns will be removed from commits`);
   });
 
+// Setup author command
+program
+  .command('setup-author')
+  .description('Change git author if current author is an AI')
+  .action(async () => {
+    const currentName = getGitUserName();
+    const currentEmail = getGitUserEmail();
+
+    logger.header('👤 Git Author Setup');
+    logger.blank();
+
+    if (currentName.exists && currentName.value) {
+      if (isAIAuthor(currentName.value)) {
+        logger.warning(`Current author: ${chalk.yellow(currentName.value)} ${chalk.dim('(AI detected)')}`);
+      } else {
+        logger.info(`Current author: ${chalk.cyan(currentName.value)}`);
+      }
+      if (currentEmail.exists && currentEmail.value) {
+        logger.info(`Current email:  ${chalk.cyan(currentEmail.value)}`);
+      }
+      logger.blank();
+    }
+
+    const response = await prompts([
+      {
+        type: 'text',
+        name: 'name',
+        message: 'Your name',
+        initial: currentName.exists && currentName.value && !isAIAuthor(currentName.value) ? currentName.value : '',
+        validate: (value: string) => value.trim().length > 0 ? true : 'Name is required',
+      },
+      {
+        type: 'text',
+        name: 'email',
+        message: 'Your email',
+        initial: currentEmail.exists && currentEmail.value ? currentEmail.value : '',
+        validate: (value: string) => {
+          if (value.trim().length === 0) return 'Email is required';
+          if (!value.includes('@')) return 'Please enter a valid email';
+          return true;
+        },
+      },
+    ]);
+
+    if (response.name && response.email) {
+      setGitUserName(response.name.trim());
+      setGitUserEmail(response.email.trim());
+      logger.blank();
+      logger.success(`✓ Git author updated to: ${chalk.cyan(response.name)} <${chalk.cyan(response.email)}>`);
+      logger.blank();
+    } else {
+      logger.blank();
+      logger.info('Cancelled.');
+    }
+  });
+
 // Parse arguments
 if (process.argv.length <= 2) {
   await runInstallCommand();

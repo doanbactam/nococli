@@ -13809,6 +13809,55 @@ program2.command("patterns").description("List all AI co-author signature patter
   logger2.table(["Status", "Pattern"], table);
   logger2.info(`${patterns.length} patterns will be removed from commits`);
 });
+program2.command("setup-author").description("Change git author if current author is an AI").action(async () => {
+  const currentName = getGitUserName();
+  const currentEmail = getGitUserEmail();
+  logger2.header("\uD83D\uDC64 Git Author Setup");
+  logger2.blank();
+  if (currentName.exists && currentName.value) {
+    if (isAIAuthor(currentName.value)) {
+      logger2.warning(`Current author: ${source_default.yellow(currentName.value)} ${source_default.dim("(AI detected)")}`);
+    } else {
+      logger2.info(`Current author: ${source_default.cyan(currentName.value)}`);
+    }
+    if (currentEmail.exists && currentEmail.value) {
+      logger2.info(`Current email:  ${source_default.cyan(currentEmail.value)}`);
+    }
+    logger2.blank();
+  }
+  const response = await import_prompts2.default([
+    {
+      type: "text",
+      name: "name",
+      message: "Your name",
+      initial: currentName.exists && currentName.value && !isAIAuthor(currentName.value) ? currentName.value : "",
+      validate: (value) => value.trim().length > 0 ? true : "Name is required"
+    },
+    {
+      type: "text",
+      name: "email",
+      message: "Your email",
+      initial: currentEmail.exists && currentEmail.value ? currentEmail.value : "",
+      validate: (value) => {
+        if (value.trim().length === 0)
+          return "Email is required";
+        if (!value.includes("@"))
+          return "Please enter a valid email";
+        return true;
+      }
+    }
+  ]);
+  if (response.name && response.email) {
+    setGitUserName(response.name.trim());
+    setGitUserEmail(response.email.trim());
+    logger2.blank();
+    logger2.success(`✓ Git author updated to: ${source_default.cyan(response.name)} <${source_default.cyan(response.email)}>`);
+    logger2.blank();
+  } else {
+    logger2.blank();
+    logger2.info("Cancelled.");
+  }
+});
 if (process.argv.length <= 2) {
   await runInstallCommand();
 } else {
