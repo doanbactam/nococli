@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-03-28
+
+### Changed
+- Replaced chalk, ora, listr2, prompts with built-in Node.js APIs (ANSI codes, readline/promises)
+- Reduced runtime dependencies from 5 to 1 (only commander remains)
+- Bundle size reduced from ~900KB to ~85KB (10x improvement)
+- Build simplified: single `bun build --target node` instead of dual-target
+- Version now read from package.json at runtime (single source of truth)
+- Logger simplified from 128 to 62 lines using raw ANSI escape codes
+- CI workflow now triggers on master branch (was incorrectly set to main)
+- Added PR check job: lint, format, type-check, test, build
+
+### Added
+- Email-domain AI pattern matching (catches AI signatures by email regardless of name)
+- ESLint + Prettier + typescript-eslint configuration
+- `lint`, `format`, `format:check` npm scripts
+
+### Removed
+- Removed chalk, ora, listr2, prompts dependencies
+- Removed .noco-config.json (dead file)
+- Removed nococli-1.0.1.tgz, extra lockfiles
+- Removed dead main() exports from install.ts and uninstall.ts
+- Removed unused hooks directory from npm files
+
 ## [1.0.3] - 2026-03-24
 
 ### Added
