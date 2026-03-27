@@ -18,34 +18,71 @@ npx nococli
 
 That's it.
 
+## How It Works
+
+nococli installs a Git `commit-msg` hook that automatically strips AI co-author signatures from your commit messages before they're saved. The hook is installed globally via `git init.templatedir`, so it applies to **all new repositories** automatically.
+
+For existing repositories, just run `git init` to pick up the hook.
+
+## CLI Commands
+
+```bash
+# Install hook globally (default when running npx nococli)
+npx nococli
+npx nococli install           # Same as above
+npx nococli install --force   # Overwrite existing hook without prompting
+
+# Check installation status
+npx nococli status
+
+# List all AI signature patterns being removed
+npx nococli patterns
+
+# Change git author if current author looks like an AI
+npx nococli setup-author
+
+# Remove hook from your system
+npx nococli uninstall
+npx nococli uninstall --remove-config  # Also remove git template config
+```
+
 ## Supported AI Signatures
 
 Removes co-author signatures from:
 
-- **Claude** (Claude, Claude Code, Claude 3, Claude 3.5, Claude Sonnet, Claude Opus)
+- **Claude** (Claude Code, Claude Sonnet, Claude Opus, etc.)
 - **GitHub Copilot**
-- **ChatGPT / OpenAI** (ChatGPT, GPT-4, ChatGPT-4o)
+- **ChatGPT / OpenAI** (GPT-4, ChatGPT-4o, etc.)
 - **Cursor AI**
 - **Tabnine**
-- **CodeWhisperer / Amazon CodeWhisperer**
+- **Amazon CodeWhisperer**
 - **Codeium**
 - **Replit Ghostwriter**
-- **Sourcegraph Cody / Cody**
-- **Factory Droid** (factory-droid, factory-droid[bot])
-- **Gemini / Google Gemini** (Gemini Pro, Gemini 1.5)
+- **Sourcegraph Cody**
+- **Factory Droid**
+- **Google Gemini** (Gemini Pro, Gemini 1.5, etc.)
 - **Perplexity AI**
 - **Amazon Q**
-- **Amp / Amp AI**
+- **Amp AI**
 
-### Pattern Matching Features
+### Pattern Matching
 
-- **Case-insensitive** matching for "Co-Authored-By" lines
-- **Flexible whitespace** handling (spaces, tabs, no space after colon)
-- **Version number** support (e.g., "Claude 3.5 Sonnet", "GPT-4")
-- **Email format** variations handled
+- **Case-insensitive** — `Co-Authored-By`, `co-authored-by`, `CO-AUTHORED-BY` all matched
+- **Flexible whitespace** — spaces, tabs, no space after colon
+- **Version numbers** — `Claude 3.5 Sonnet`, `GPT-4`, etc.
+- **Email-domain matching** — catches AI signatures by email regardless of name
+
+## Features
+
+- **Zero-config** — one command to install, works everywhere
+- **Lightweight** — single runtime dependency (commander), ~85KB bundle
+- **AI author detection** — warns if your git author name looks AI-generated and helps you fix it
+- **Preserves human co-authors** — only strips AI signatures, keeps real collaborators
+- **Works with all git workflows** — rebase, amend, merge, interactive rebase
 
 ## Requirements
 
+- **Node.js** >= 18.0.0
 - **Unix/Linux/macOS**: Git with bash hook support
 - **Windows**: Git Bash, WSL, or MSYS2 (native PowerShell not supported)
 
@@ -60,9 +97,13 @@ npm install -g nococli
 noco
 ```
 
-## npm Package
+## Contributing
 
-[nococli](https://www.npmjs.com/package/nococli) - Published on npm, the package manager for JavaScript.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup and guidelines.
+
+## License
+
+[MIT](https://opensource.org/licenses/MIT)
 
 ---
 
