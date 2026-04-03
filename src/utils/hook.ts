@@ -54,7 +54,7 @@ function escapePowerShellSingleQuotedString(value: string): string {
 }
 
 function quotePosixShell(value: string): string {
-  return `'${value.replace(/'/g, `'\"'\"'`)}'`;
+  return `'${value.replace(/'/g, "'\"'\"'")}'`;
 }
 
 export function generateNodeHookContent(options: HookTemplateOptions = {}): string {

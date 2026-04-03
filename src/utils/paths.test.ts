@@ -34,12 +34,15 @@ describe('Path Utilities', () => {
   });
 
   test('builds config paths from the resolved home directory', () => {
-    process.env.HOME = '/tmp/noco-home';
+    const home = '/tmp/noco-home';
+    process.env.HOME = home;
 
     const config = getConfig();
-    expect(config.templateDir).toBe('/tmp/noco-home/.git-templates');
-    expect(config.hookFile).toBe('/tmp/noco-home/.git-templates/hooks/commit-msg');
-    expect(config.powerShellHookFile).toBe('/tmp/noco-home/.git-templates/hooks/commit-msg.ps1');
+    expect(toGitPath(config.templateDir)).toBe('/tmp/noco-home/.git-templates');
+    expect(toGitPath(config.hookFile)).toBe('/tmp/noco-home/.git-templates/hooks/commit-msg');
+    expect(toGitPath(config.powerShellHookFile)).toBe(
+      '/tmp/noco-home/.git-templates/hooks/commit-msg.ps1',
+    );
   });
 
   test('converts Windows paths to git-friendly slashes', () => {
