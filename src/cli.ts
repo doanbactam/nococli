@@ -150,7 +150,10 @@ program
       }
     }
 
-    const result = await uninstall({ silent: options.silent });
+    const result = await uninstall({
+      silent: options.silent,
+      removeConfig: options.removeConfig,
+    });
     if (result.success) {
       logger.blank();
       logger.success('Uninstallation complete!');
@@ -168,8 +171,8 @@ program
   .action(async () => {
     logger.header('noco Status');
 
-    const config = getConfig();
     const current = getTemplateDir();
+    const config = current.exists && current.value ? getConfig(current.value) : getConfig();
     if (current.exists && current.value) {
       logger.success(`Installed at ${current.value}`);
     } else {

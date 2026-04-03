@@ -89,6 +89,18 @@ Co-Authored-By: John Doe <john@example.com>`);
 
     expect(sanitized).toContain('John Doe');
   });
+
+  test('preserves human co-authors with AI-like first names', () => {
+    const sanitized = sanitizeCommitMessage(`feat: add feature
+
+Co-Authored-By: Claude Smith <claude.smith@company.com>
+Co-Authored-By: Gemini Wong <gemini.wong@company.com>
+Co-Authored-By: Cody Johnson <cody.j@company.com>`);
+
+    expect(sanitized).toContain('Claude Smith');
+    expect(sanitized).toContain('Gemini Wong');
+    expect(sanitized).toContain('Cody Johnson');
+  });
 });
 
 describe('Pattern Matching - Case Variations (VAL-PATTERN-001)', () => {
@@ -300,9 +312,7 @@ describe('Pattern Matching - Mixed AI and Human Co-Authors (VAL-PATTERN-007)', (
     const nameRegex = new RegExp(patterns[0].pattern, 'i');
     const emailRegex = new RegExp(patterns[1].pattern, 'i');
 
-    // These have AI-sounding names but human emails
-    // Name pattern matches (greedy .*) -- known false positive
-    // Email pattern does NOT match -- provides safety net
+    // These have AI-sounding names but are still human co-authors and must be preserved.
     const humanWithAIName = [
       'Co-Authored-By: Claude Smith <claude.smith@company.com>',
       'Co-Authored-By: Gemini Wong <gemini.wong@company.com>',
@@ -310,9 +320,7 @@ describe('Pattern Matching - Mixed AI and Human Co-Authors (VAL-PATTERN-007)', (
     ];
 
     humanWithAIName.forEach((human) => {
-      // Name pattern still matches -- known limitation
-      expect(nameRegex.test(human)).toBe(true);
-      // Email pattern does NOT match -- email-based safety net
+      expect(nameRegex.test(human)).toBe(false);
       expect(emailRegex.test(human)).toBe(false);
     });
   });

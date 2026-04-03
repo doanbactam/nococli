@@ -19,9 +19,7 @@ export function getHomeDir(): string {
   return os.homedir();
 }
 
-export function getConfig(): Config {
-  const homeDir = getHomeDir();
-  const templateDir = path.join(homeDir, '.git-templates');
+export function createConfig(templateDir: string): Config {
   const hooksDir = path.join(templateDir, 'hooks');
   const hookFile = path.join(hooksDir, 'commit-msg');
   const powerShellHookFile = path.join(hooksDir, 'commit-msg.ps1');
@@ -32,6 +30,10 @@ export function getConfig(): Config {
     hookFile,
     powerShellHookFile,
   };
+}
+
+export function getConfig(templateDir = path.join(getHomeDir(), '.git-templates')): Config {
+  return createConfig(templateDir);
 }
 
 /**

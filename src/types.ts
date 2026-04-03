@@ -60,8 +60,23 @@ function flattenCatalogValues(
   return uniqueOrdered(AI_SIGNATURE_CATALOG.flatMap((provider) => provider[key] ?? []));
 }
 
+function toDisplayAlias(value: string): string {
+  return value.replace(/\b\w+/g, (part) => {
+    if (part === part.toUpperCase()) {
+      return part;
+    }
+
+    return part.charAt(0).toUpperCase() + part.slice(1);
+  });
+}
+
 function buildNamePattern(aliases: readonly string[]): string {
-  return `${CO_AUTHORED_BY_PREFIX}(?:${aliases.map(escapeRegex).join('|')}).*`;
+  const exactAliases = uniqueOrdered([...aliases, ...AI_AUTHOR_TOKENS.map(toDisplayAlias)]);
+  const aliasPattern = `(?:${exactAliases.map(escapeRegex).join('|')})`;
+  const suffixPattern =
+    '(?:[\\-_][A-Za-z0-9.\\[\\]-]+)*(?:\\s+v?\\d[\\w.-]*(?:\\s+[A-Za-z][\\w.-]*)*)?(?:\\s*\\([^\\n)]*\\))?';
+
+  return `${CO_AUTHORED_BY_PREFIX}${aliasPattern}${suffixPattern}\\s*(?:<[^>]+>)?\\s*$`;
 }
 
 function buildEmailPattern(emails: readonly string[], emailPatterns: readonly string[]): string {

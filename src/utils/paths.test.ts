@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from 'bun:test';
-import { getConfig, getHomeDir, toGitPath } from './paths';
+import { createConfig, getConfig, getHomeDir, toGitPath } from './paths';
 
 const originalHome = process.env.HOME;
 const originalUserProfile = process.env.USERPROFILE;
@@ -49,5 +49,13 @@ describe('Path Utilities', () => {
     expect(toGitPath('C:\\Users\\Test User\\.git-templates')).toBe(
       'C:/Users/Test User/.git-templates',
     );
+  });
+
+  test('builds config paths from an explicit template directory', () => {
+    const config = createConfig('C:/custom/templates');
+
+    expect(toGitPath(config.templateDir)).toBe('C:/custom/templates');
+    expect(toGitPath(config.hookFile)).toBe('C:/custom/templates/hooks/commit-msg');
+    expect(toGitPath(config.powerShellHookFile)).toBe('C:/custom/templates/hooks/commit-msg.ps1');
   });
 });
