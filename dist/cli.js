@@ -1975,9 +1975,7 @@ function getHomeDir() {
   }
   return os.homedir();
 }
-function getConfig() {
-  const homeDir = getHomeDir();
-  const templateDir = path.join(homeDir, ".git-templates");
+function createConfig(templateDir) {
   const hooksDir = path.join(templateDir, "hooks");
   const hookFile = path.join(hooksDir, "commit-msg");
   const powerShellHookFile = path.join(hooksDir, "commit-msg.ps1");
@@ -1987,6 +1985,9 @@ function getConfig() {
     hookFile,
     powerShellHookFile
   };
+}
+function getConfig(templateDir = path.join(getHomeDir(), ".git-templates")) {
+  return createConfig(templateDir);
 }
 function toGitPath(filePath) {
   return filePath.replace(/\\/g, "/");
@@ -2113,8 +2114,19 @@ function uniqueOrdered(values) {
 function flattenCatalogValues(key) {
   return uniqueOrdered(AI_SIGNATURE_CATALOG.flatMap((provider) => provider[key] ?? []));
 }
+function toDisplayAlias(value) {
+  return value.replace(/\b\w+/g, (part) => {
+    if (part === part.toUpperCase()) {
+      return part;
+    }
+    return part.charAt(0).toUpperCase() + part.slice(1);
+  });
+}
 function buildNamePattern(aliases) {
-  return `${CO_AUTHORED_BY_PREFIX}(?:${aliases.map(escapeRegex).join("|")}).*`;
+  const exactAliases = uniqueOrdered([...aliases, ...AI_AUTHOR_TOKENS.map(toDisplayAlias)]);
+  const aliasPattern = `(?:${exactAliases.map(escapeRegex).join("|")})`;
+  const suffixPattern = "(?:[\\-_][A-Za-z0-9.\\[\\]-]+)*(?:\\s+v?\\d[\\w.-]*(?:\\s+[A-Za-z][\\w.-]*)*)?(?:\\s*\\([^\\n)]*\\))?";
+  return `${CO_AUTHORED_BY_PREFIX}${aliasPattern}${suffixPattern}\\s*(?:<[^>]+>)?\\s*$`;
 }
 function buildEmailPattern(emails, emailPatterns) {
   const emailAlternatives = [...emails.map(escapeRegex), ...emailPatterns];
@@ -2637,7 +2649,10 @@ program2.command("uninstall").description("Remove noco hook from your system").o
       process.exit(0);
     }
   }
-  const result = await uninstall({ silent: options.silent });
+  const result = await uninstall({
+    silent: options.silent,
+    removeConfig: options.removeConfig
+  });
   if (result.success) {
     logger2.blank();
     logger2.success("Uninstallation complete!");
@@ -2649,8 +2664,8 @@ program2.command("uninstall").description("Remove noco hook from your system").o
 });
 program2.command("status").description("Check if noco is properly installed and configured").action(async () => {
   logger2.header("noco Status");
-  const config = getConfig();
   const current = getTemplateDir();
+  const config = current.exists && current.value ? getConfig(current.value) : getConfig();
   if (current.exists && current.value) {
     logger2.success(`Installed at ${current.value}`);
   } else {
